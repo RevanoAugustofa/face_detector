@@ -26,16 +26,21 @@ if (SpeechRecognition) {
       }
     }
 
-    // Tampilkan teks
-    const textToShow = finalTranscript || interimTranscript;
+    // Tampilkan teks: Gabungkan final dan interim agar responsif
+    const textToShow = (finalTranscript + ' ' + interimTranscript).trim();
+    
     if (textToShow) {
       subtitleDiv.innerText = textToShow;
       subtitleDiv.style.display = 'block';
       
-      // Hapus teks setelah beberapa detik diam jika mau (opsional)
+      // Reset timer setiap kali ada input suara baru
       clearTimeout(subtitleDiv.timer);
+      
+      // Sembunyikan subtitle jika tidak ada suara selama 3 detik
       subtitleDiv.timer = setTimeout(() => {
-        if (isRecording) subtitleDiv.innerText = "..."; // Indikasi masih mendengarkan
+         if (isRecording) {
+            subtitleDiv.style.display = 'none';
+         }
       }, 3000);
     }
   };
