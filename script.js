@@ -1,5 +1,104 @@
 const video = document.getElementById("video")
 const container = document.getElementById("container")
+const btnSpeech = document.getElementById("btn-speech")
+const subtitleDiv = document.getElementById("subtitle")
+
+// --- Konfigurasi Speech Recognition ---
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isRecording = false;
+
+if (SpeechRecognition) {
+  recognition = new SpeechRecognition();
+  recognition.lang = 'id-ID'; // Bahasa Indonesia
+  recognition.continuous = true; // Terus mendengarkan
+  recognition.interimResults = true; // Tampilkan hasil sementara
+
+  recognition.onresult = (event) => {
+    let finalTranscript = '';
+    let interimTranscript = '';
+
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript;
+      } else {
+        interimTranscript += event.results[i][0].transcript;
+      }
+    }
+
+    // Tampilkan teks
+    const textToShow = finalTranscript || interimTranscript;
+    if (textToShow) {
+      subtitleDiv.innerText = textToShow;
+      subtitleDiv.style.display = 'block';
+      
+      // Hapus teks setelah beberapa detik diam jika mau (opsional)
+      clearTimeout(subtitleDiv.timer);
+      subtitleDiv.timer = setTimeout(() => {
+        if (isRecording) subtitleDiv.innerText = "..."; // Indikasi masih mendengarkan
+      }, 3000);
+    }
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error", event.error);
+    if (event.error === 'not-allowed') {
+        alert("Akses mikrofon ditolak. Izinkan akses untuk menggunakan fitur ini.");
+        stopRecognition();
+    }
+  };
+
+  recognition.onend = () => {
+    // Jika masih status recording tapi berhenti (misal koneksi putus), mulai lagi
+    if (isRecording) {
+      try {
+          recognition.start();
+      } catch (e) {
+          console.log("Re-start recognition ignored");
+      }
+    } else {
+      subtitleDiv.style.display = 'none';
+    }
+  };
+} else {
+  btnSpeech.style.display = 'none';
+  console.warn("Browser tidak mendukung Web Speech API");
+}
+
+function startRecognition() {
+  if (!recognition) return;
+  try {
+    recognition.start();
+    isRecording = true;
+    btnSpeech.innerText = "Stop Speech Recognition";
+    btnSpeech.classList.add("recording");
+    subtitleDiv.style.display = 'block';
+    subtitleDiv.innerText = "Mendengarkan...";
+  } catch (err) {
+    console.error("Gagal memulai recognition:", err);
+  }
+}
+
+function stopRecognition() {
+  if (!recognition) return;
+  isRecording = false;
+  recognition.stop();
+  btnSpeech.innerText = "Mulai Speech Recognition";
+  btnSpeech.classList.remove("recording");
+  subtitleDiv.innerText = "";
+  subtitleDiv.style.display = 'none';
+}
+
+btnSpeech.addEventListener("click", () => {
+  if (isRecording) {
+    stopRecognition();
+  } else {
+    startRecognition();
+  }
+});
+
+
+// --- Kode Face API yang sudah ada ---
 
 // Memuat 3 Model: Deteksi Wajah, Landmarks (Wajib untuk Age/Gender), dan Age/Gender itu sendiri
 Promise.all([

@@ -32,6 +32,45 @@
       top: 0;
       left: 0;
     }
+
+    #controls {
+      margin-top: 10px;
+      z-index: 10;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button.recording {
+      background-color: #dc3545;
+    }
+
+    #subtitle {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 18px;
+      text-align: center;
+      max-width: 80%;
+      min-height: 24px;
+      display: none; /* Sembunyikan jika tidak ada teks/aktif */
+    }
   </style>
   <!-- Menggunakan CDN yang lebih spesifik dan stabil -->
   <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
@@ -41,6 +80,10 @@
   <h2>Realtime Face Detection</h2>
   <div id="container">
     <video id="video" width="1368" height="768" autoplay muted></video>
+    <div id="subtitle"></div>
+  </div>
+  <div id="controls">
+    <button id="btn-speech">Mulai Speech Recognition</button>
   </div>
 </body>
 </html>
