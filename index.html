@@ -73,6 +73,18 @@
       min-height: 24px;
       display: none; /* Sembunyikan jika tidak ada teks/aktif */
     }
+
+    #meme-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      z-index: 9999;
+      background-color: black;
+      display: none;
+    }
   </style>
   <!-- Menggunakan CDN yang lebih spesifik dan stabil -->
   <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
@@ -80,6 +92,10 @@
 </head>
 <body>
   <h2>Realtime Face Detection</h2>
+  
+  <!-- Video Meme Overlay -->
+  <video id="meme-video" src="asset/meme/meme67.mp4"></video>
+
   <div id="container">
     <video id="video" width="1368" height="768" autoplay muted></video>
     <div id="subtitle"></div>

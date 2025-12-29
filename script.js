@@ -2,11 +2,13 @@ const video = document.getElementById("video")
 const container = document.getElementById("container")
 const btnSpeech = document.getElementById("btn-speech")
 const subtitleDiv = document.getElementById("subtitle")
+const memeVideo = document.getElementById("meme-video")
 
 // --- Konfigurasi Speech Recognition ---
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 let isRecording = false;
+let isMemeCooldown = false;
 
 if (SpeechRecognition) {
   recognition = new SpeechRecognition();
@@ -33,6 +35,12 @@ if (SpeechRecognition) {
       subtitleDiv.innerText = textToShow;
       subtitleDiv.style.display = 'block';
       
+      // Cek Trigger Meme
+      const lowerText = textToShow.toLowerCase();
+      if (!isMemeCooldown && (lowerText.includes("67") || lowerText.includes("enam tujuh") || lowerText.includes("six seven"))) {
+         playMeme();
+      }
+
       // Reset timer setiap kali ada input suara baru
       clearTimeout(subtitleDiv.timer);
       
@@ -93,6 +101,29 @@ function stopRecognition() {
   subtitleDiv.innerText = "";
   subtitleDiv.style.display = 'none';
 }
+
+function playMeme() {
+  console.log("Meme Triggered!");
+  isMemeCooldown = true;
+  memeVideo.style.display = "block";
+  memeVideo.currentTime = 0; // Mulai dari awal
+  memeVideo.play().catch(e => console.error("Gagal memutar video:", e));
+
+  // Restart recognition untuk membersihkan buffer teks "67" agar tidak terpicu ulang
+  // isRecording masih true, jadi onend akan otomatis me-start lagi dengan buffer bersih.
+  recognition.stop();
+}
+
+// Event saat video meme selesai
+memeVideo.onended = () => {
+  memeVideo.style.display = "none";
+  console.log("Meme selesai. Cooldown 10 detik...");
+  
+  setTimeout(() => {
+    isMemeCooldown = false;
+    console.log("Meme siap dipicu lagi.");
+  }, 10000); // 10 detik
+};
 
 btnSpeech.addEventListener("click", () => {
   if (isRecording) {
