@@ -54,6 +54,12 @@ if (SpeechRecognition) {
   };
 
   recognition.onerror = (event) => {
+    if (event.error === 'no-speech') {
+        console.warn("Tidak ada suara terdeteksi (no-speech). Akan restart otomatis.");
+        // Abaikan, onend akan merestart
+        return; 
+    }
+    
     console.error("Speech recognition error", event.error);
     if (event.error === 'not-allowed') {
         alert("Akses mikrofon ditolak. Izinkan akses untuk menggunakan fitur ini.");
