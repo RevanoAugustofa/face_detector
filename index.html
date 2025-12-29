@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Face Detection Realtime</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background-color: #f0f0f0;
+      font-family: sans-serif;
+    }
+
+    #container {
+      position: relative;
+      /* Memastikan canvas bisa absolute terhadap div ini */
+    }
+
+    video {
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+  <!-- Menggunakan CDN yang lebih spesifik dan stabil -->
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <h2>Realtime Face Detection</h2>
+  <div id="container">
+    <video id="video" width="720" height="560" autoplay muted></video>
+  </div>
+</body>
+</html>
